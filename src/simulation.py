@@ -50,6 +50,12 @@ def comparative_separation(x):
     # return mut10, vart10
     return [pc, pw]
 
+def power(w, v, nw, nv):
+    var = w * (1 - w) / nw + v * (1 - v) / nv
+    mu = w - v
+    z = mu / np.sqrt(var)
+    p = norm.sf(-1.96 - z) - norm.sf(1.96 - z)
+    return p
 #define probability rates
 #
 # r1 = 0.20 #P(C = 1, Y = 1, A = 1)
@@ -103,13 +109,9 @@ n = 1000
 r = 1000
 nc = 2*n
 
-# Estimate type 2 error
-vart = TPR1*(1-TPR1) / (r1+r2) + TPR0*(1-TPR0) / (r5+r6)
-varf = FPR1*(1-FPR1) / (r3+r4) + FPR0*(1-FPR0) / (r7+r8)
-mmt = (TPR1-TPR0) / np.sqrt(vart/n)
-ndt = norm.sf(-1.96 - mmt)-norm.sf(1.96-mmt)
-mmf = (FPR1-FPR0) / np.sqrt(varf/n)
-ndf = norm.sf(-1.96 - mmf)-norm.sf(1.96-mmf)
+# Estimate power
+ndt = power(TPR1, TPR0, (r1+r2)*n, (r5+r6)*n)
+ndf = power(FPR1, FPR0, (r3+r4)*n, (r7+r8)*n)
 print("ndt: %f, ndf: %f" %(ndt,ndf))
 print("estimated positive rate: %f" %(1-ndt*ndf))
 
@@ -117,12 +119,8 @@ TPR10 = TPR1*(1-FPR0)
 TPR01 = TPR0*(1-FPR1)
 TPR11 = TPR1*(1-FPR1)
 TPR00 = TPR0*(1-FPR0)
-varc = TPR10*(1-TPR10) / ((r1+r2)*(r8+r7)*2) + TPR01*(1-TPR01) / ((r5+r6)*(r4+r3)*2)
-varw = TPR11*(1-TPR11) / ((r1+r2)*(r3+r4)*2) + TPR00*(1-TPR00) / ((r5+r6)*(r7+r8)*2)
-mmc = (TPR10-TPR01) / np.sqrt(varc/(nc))
-ndc = norm.sf(-1.96 - mmc)-norm.sf(1.96-mmc)
-mmw = (TPR11-TPR00) / np.sqrt(varw/(nc))
-ndw = norm.sf(-1.96 - mmw)-norm.sf(1.96-mmw)
+ndc = power(TPR10, TPR01, (r1+r2)*(r8+r7)*2*nc, (r5+r6)*(r4+r3)*2*nc)
+ndw = power(TPR11, TPR00, (r1+r2)*(r3+r4)*2*nc, (r5+r6)*(r7+r8)*2*nc)
 print("ndc: %f, ndw: %f" %(ndc,ndw))
 print("estimated positive rate: %f" %(1-ndc*ndw))
 # print("TPR10: %f, var: %f" %(TPR10, TPR10*(1-TPR10) / ((r1+r2)*(r8+r7)*2*nc)))
