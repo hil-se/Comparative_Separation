@@ -62,7 +62,8 @@ class Simulate:
         self.TPR00 = self.TPR0 * (1 - self.FPR0)
         print("TPRd: %.3f, FPRd: %.3f" % (self.TPR1 - self.TPR0, self.FPR1 - self.FPR0))
         print("TPRc: %.3f, TPRw: %.3f" % (self.TPR10 - self.TPR01, self.TPR11 - self.TPR00))
-        print("Calculated Type I error rate: %.4f" %(1-(1-self.alpha)**2))
+        print("Expected Type I error rate: %.5f" %(1-(1-self.alpha)**2))
+
     
     def separation_positive_rate(self, n = 1000):
         # Estimate type2error for separation
@@ -70,10 +71,10 @@ class Simulate:
         ndf = self.type2error(self.FPR1, self.FPR0, (self.p[2] + self.p[3]) * n, (self.p[6] + self.p[7]) * n)
         spr = 1 - ndt * ndf
         print("ndt: %f, ndf: %f" % (ndt, ndf))
-        print("estimated separation positive rate: %.4f" % spr)
+        print("Expected separation positive rate: %.5f" % spr)
         return spr
     
-    def comparative_separation_positive_rate(self, nc = 2000):        
+    def comparative_separation_positive_rate(self, nc = 2000):
         # Estimate type2error for comparative separation
         ndc = self.type2error(self.TPR10, self.TPR01, (self.p[0] + self.p[1]) * (self.p[7] + self.p[6]) * 2 * nc,
                          (self.p[4] + self.p[5]) * (self.p[3] + self.p[2]) * 2 * nc)
@@ -81,9 +82,47 @@ class Simulate:
                          (self.p[4] + self.p[5]) * (self.p[6] + self.p[7]) * 2 * nc)
         cpr = 1 - ndc * ndw
         print("ndc: %f, ndw: %f" % (ndc, ndw))
-        print("estimated comparative separation positive rate: %.4f" % cpr)
+        print("Expected comparative separation positive rate: %.5f" % cpr)
         return cpr
-    
+
+    def simulate_tpr1(self, n = 1000, r = 10000):
+        tpr1s = []
+        for i in range(r):
+            selectedr = np.random.choice(self.a, size=n, p=self.p)
+            x = Counter(selectedr)
+            mut1, vart1 = self.stats(x["111"], x["011"])
+            tpr1s.append(mut1)
+        mu = np.mean(tpr1s)
+        var = np.var(tpr1s, ddof=1)
+        print("Simulated sampled mean of TPR(A=1): %.5f" % mu)
+        print("Simulated sampled var of TPR(A=1): %.5f" % var)
+
+    def simulate_tpr10(self, nc = 2000, r = 10000):
+        tpr10s = []
+        for i in range(r):
+            x = []
+            c1 = np.random.choice(self.a, size=nc, p=self.p)
+            c2 = np.random.choice(self.a, size=nc, p=self.p)
+            for j in range(nc):
+                if c1[j][1] == c2[j][1]:
+                    continue
+                if c1[j][0] == c2[j][0]:
+                    cij = "x"
+                elif c1[j][0] > c2[j][0]:
+                    cij = "1"
+                else:
+                    cij = "0"
+                aij = c1[j][2] + c2[j][2]
+                xij = cij + c1[j][1] + aij
+                x.append(xij)
+            x = Counter(x)
+            mut10, vart10 = self.stats_comp(x["1110"], x["1110"]+x["0110"]+x["x110"], x["0001"], x["0001"]+x["1001"]+x["x001"])
+            tpr10s.append(mut10)
+        mu = np.mean(tpr10s)
+        var = np.var(tpr10s, ddof=1)
+        print("Simulated sampled mean of TPR(1,0): %.5f" % mu)
+        print("Simulated sampled var of TPR(1,0): %.5f" % var)
+
     def simulate_separation(self, n = 1000, r = 10000):
         violate = 0
         for i in range(r):
@@ -93,13 +132,11 @@ class Simulate:
             if min((ps)) < self.alpha:
                 violate += 1
         sprx = violate / r
-        print("Simulated separation positive rate: %.4f" % sprx)
+        print("Simulated separation positive rate: %.5f" % sprx)
         return sprx
     
     def simulate_comparative_separation(self, nc = 2000, r = 10000):
         violate = 0
-        mus = []
-        vars = []
         for i in range(r):
             x = []
             c1 = np.random.choice(self.a, size=nc, p=self.p)
@@ -122,7 +159,7 @@ class Simulate:
             if min((ps)) < self.alpha:
                 violate += 1
         cprx = violate / r
-        print("Simulated comparative separation positive rate: %.4f" %cprx)
+        print("Simulated comparative separation positive rate: %.5f" %cprx)
         return cprx
 
 
