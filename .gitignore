@@ -1,3 +1,9 @@
+.idea/
+*.h5
+*.keras
+real/src/checkpoint/*
+
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[codz]
