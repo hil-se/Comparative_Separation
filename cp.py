@@ -17,10 +17,10 @@ class CP:
         self.y_pred = np.array(y_pred)
 
     def stats_comp(self, xt1, x1, xt2, x2):
-        mu = (xt1 + xt2) / (x1 + x2)
-        var = mu * (1 - mu) / (x1 + x2)
-        var_pop = mu * (1 - mu)
-        return mu, var, var_pop
+        n = (x1 + x2)
+        mu = (xt1 + xt2) / n
+        var = mu * (1 - mu) / n
+        return mu, var, n
 
     # Test comparative separation
     def comparative_separation(self, s):
@@ -42,22 +42,22 @@ class CP:
             count.append((s, y, pred))
         x = Counter(count)
 
-        mut10, vart10, varpop10 = self.stats_comp(x[("1", 1, 1)], x[("1", 1, 1)] + x[("1", 1, -1)] + x[("1", 1, 0)], x[("-1", -1, -1)],
+        mut10, vart10, n10 = self.stats_comp(x[("1", 1, 1)], x[("1", 1, 1)] + x[("1", 1, -1)] + x[("1", 1, 0)], x[("-1", -1, -1)],
                                         x[("-1", -1, -1)] + x[("-1", -1, 1)] + x[("-1", -1, 0)])
-        mut01, vart01, varpop01 = self.stats_comp(x[("-1", 1, 1)], x[("-1", 1, 1)] + x[("-1", 1, -1)] + x[("-1", 1, 0)], x[("1", -1, -1)],
+        mut01, vart01, n01 = self.stats_comp(x[("-1", 1, 1)], x[("-1", 1, 1)] + x[("-1", 1, -1)] + x[("-1", 1, 0)], x[("1", -1, -1)],
                                         x[("1", -1, -1)] + x[("1", -1, 1)] + x[("1", -1, 0)])
         zc = (mut10 - mut01) / np.sqrt(vart10 + vart01)
         pc = norm.sf(np.abs(zc)) * 2
-        dc = (mut10 - mut01) / np.sqrt(varpop10 + varpop01)
+        dc = (mut10 - mut01) / np.sqrt((vart10*n10*n10 + vart01*n01*n01) / (n10+n01) )
 
         if len(set(s))==4:
-            mut11, vart11, varpop11 = self.stats_comp(x[("01", 1, 1)], x[("01", 1, 1)] + x[("01", 1, -1)] + x[("01", 1, 0)], x[("01", -1, -1)],
+            mut11, vart11, n11 = self.stats_comp(x[("01", 1, 1)], x[("01", 1, 1)] + x[("01", 1, -1)] + x[("01", 1, 0)], x[("01", -1, -1)],
                                             x[("01", -1, -1)] + x[("01", -1, 1)] + x[("01", -1, 0)])
-            mut00, vart00, varpop00 = self.stats_comp(x[("00", 1, 1)], x[("00", 1, 1)] + x[("00", 1, -1)] + x[("00", 1, 0)], x[("00", -1, -1)],
+            mut00, vart00, n00 = self.stats_comp(x[("00", 1, 1)], x[("00", 1, 1)] + x[("00", 1, -1)] + x[("00", 1, 0)], x[("00", -1, -1)],
                                             x[("00", -1, -1)] + x[("00", -1, 1)] + x[("00", -1, 0)])
             zw = (mut11 - mut00) / np.sqrt(vart11 + vart00)
             pw = norm.sf(np.abs(zw)) * 2
-            dw = (mut11 - mut00) / np.sqrt(varpop11 + varpop00)
+            dw = (mut11 - mut00) / np.sqrt((vart11*n11*n11 + vart00*n00*n00) / (n11+n00) )
         else:
             pw=1.0
             dw=0.0
