@@ -39,7 +39,7 @@ class CP:
                 pred = -1
             else:
                 pred = 0
-            count.append((s[i], y[i], pred[i]))
+            count.append((s[i], y, pred))
         x = Counter(count)
 
         mut10, vart10, n10 = self.stats_comp(x[("1", 1, 1)], x[("1", 1, 1)] + x[("1", 1, -1)] + x[("1", 1, 0)], x[("-1", -1, -1)],
