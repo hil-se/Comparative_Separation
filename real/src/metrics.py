@@ -62,14 +62,22 @@ class Metrics:
         return tp, fp, tn, fn
 
     def stats(self, x1, x2):
-        mu = x1 / (x1 + x2)
-        var = mu * (1 - mu) / (x1 + x2)
-        return mu, var
+        n = x1+x2
+        if n:
+            mu = x1 / n
+            var = mu * (1 - mu) / n
+            return mu, var, n
+        else:
+            return 0,0,0
 
     def stats_comp(self, xt1, x1, xt2, x2):
-        mu = (xt1 + xt2) / (x1 + x2)
-        var = mu * (1 - mu) / (x1 + x2)
-        return mu, var
+        n = (x1 + x2)
+        if n:
+            mu = (xt1 + xt2) / n
+            var = mu * (1 - mu) / n
+            return mu, var, n
+        else:
+            return 0,0,0
 
     # Test separation
     def separation(self, s, stats=False):
@@ -78,18 +86,20 @@ class Metrics:
             count.append(str(int(self.y_pred[i]))+str(int(self.y[i]))+str(int(s[i])))
         x = Counter(count)
 
-        mut1, vart1 = self.stats(x["111"], x["011"])
-        mut0, vart0 = self.stats(x["110"], x["010"])
+        mut1, vart1, nt1 = self.stats(x["111"], x["011"])
+        mut0, vart0, nt0 = self.stats(x["110"], x["010"])
         zt = (mut1 - mut0) / np.sqrt(vart1 + vart0)
         pt = norm.sf(np.abs(zt)) * 2
-        muf1, varf1 = self.stats(x["101"], x["001"])
-        muf0, varf0 = self.stats(x["100"], x["000"])
+        dt = (mut1 - mut0) / np.sqrt((vart1 * nt1 * nt1 + vart0 * nt0 * nt0) / (nt1 + nt0))
+        muf1, varf1, nf1 = self.stats(x["101"], x["001"])
+        muf0, varf0, nf0 = self.stats(x["100"], x["000"])
         zf = (muf1 - muf0) / np.sqrt(varf1 + varf0)
         pf = norm.sf(np.abs(zf)) * 2
+        df = (muf1 - muf0) / np.sqrt((varf1 * nf1 * nf1 + varf0 * nf0 * nf0) / (nf1 + nf0))
         if stats:
             print(x)
             print("TPR1 = %.2f, TPR0 = %.2f, FPR1 = %.2f, FPR0 = %.2f" %(mut1, mut0, muf1, muf0))
-        return [pt, pf]
+        return pt, dt, pf, df
 
     # Test comparative separation
     def comparative_separation(self, s0, s1, stats=False):
@@ -110,22 +120,28 @@ class Metrics:
             count.append(pred + str(int(y)) + str(int(s0[i])) + str(int(s1[i])))
         x = Counter(count)
 
-        mut11, vart11 = self.stats_comp(x["1111"], x["1111"] + x["0111"] + x["x111"], x["0011"],
+        mut11, vart11, n11 = self.stats_comp(x["1111"], x["1111"] + x["0111"] + x["x111"], x["0011"],
                                         x["0011"] + x["1011"] + x["x011"])
-        mut00, vart00 = self.stats_comp(x["1100"], x["1100"] + x["0100"] + x["x100"], x["0000"],
+        mut00, vart00, n00 = self.stats_comp(x["1100"], x["1100"] + x["0100"] + x["x100"], x["0000"],
                                         x["0000"] + x["1000"] + x["x000"])
-        mut10, vart10 = self.stats_comp(x["1110"], x["1110"] + x["0110"] + x["x110"], x["0001"],
+        mut10, vart10, n10 = self.stats_comp(x["1110"], x["1110"] + x["0110"] + x["x110"], x["0001"],
                                         x["0001"] + x["1001"] + x["x001"])
-        mut01, vart01 = self.stats_comp(x["1101"], x["1101"] + x["0101"] + x["x101"], x["0010"],
+        mut01, vart01, n01 = self.stats_comp(x["1101"], x["1101"] + x["0101"] + x["x101"], x["0010"],
                                         x["0010"] + x["1010"] + x["x010"])
         zc = (mut10 - mut01) / np.sqrt(vart10 + vart01)
-        zw = (mut11 - mut00) / np.sqrt(vart11 + vart00)
         pc = norm.sf(np.abs(zc)) * 2
-        pw = norm.sf(np.abs(zw)) * 2
+        dc = (mut10 - mut01) / np.sqrt((vart10 * n10 * n10 + vart01 * n01 * n01) / (n10 + n01))
+        if n11>0 and n00>0:
+            zw = (mut11 - mut00) / np.sqrt(vart11 + vart00)
+            pw = norm.sf(np.abs(zw)) * 2
+            dw = (mut11 - mut00) / np.sqrt((vart11 * n11 * n11 + vart00 * n00 * n00) / (n11 + n00))
+        else:
+            pw = 1.0
+            dw = 0.0
         if stats:
             print(x)
             print("TPR11 = %.2f, TPR00 = %.2f, TPR10 = %.2f, TPR01 = %.2f" % (mut11, mut00, mut10, mut01))
-        return [pc, pw]
+        return pc, dc, pw, dw
 
     def type2error(self, w, v, nw, nv):
         var = w * (1 - w) / nw + v * (1 - v) / nv
@@ -179,3 +195,25 @@ class Metrics:
         MI = Info / (-Entropy)
         return MI
 
+    def Csep(self, s):
+
+        joint = pd.DataFrame({'y': self.y, 'y_pred': self.y_pred}, columns=['y', 'y_pred'])
+        margin = self.y.reshape(-1, 1)
+        model_joint = LinearRegression().fit(joint, s)
+        model_margin = LinearRegression().fit(margin, s)
+
+        pred_joint = model_joint.predict(joint)
+        pred_margin = model_margin.predict(margin)
+        rse_joint = np.std(pred_joint - s)
+        rse_margin = np.std(pred_margin - s)
+
+        pdf_joint = norm.pdf(s, pred_joint, rse_joint)
+        pdf_margin = norm.pdf(s, pred_margin, rse_margin)
+
+        Info = 0
+
+        for i in range(len(s)):
+            Info = Info + math.log(pdf_joint[i] / pdf_margin[i])
+
+        MI = Info / len(s)
+        return MI

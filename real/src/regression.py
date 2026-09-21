@@ -15,7 +15,7 @@ def loadData(dataName="jirasoftware_filtered"):
 def process(dataName="jirasoftware_filtered", sensitive="is_internal"):
     model = SentenceTransformer("all-MiniLM-L6-v2")
     data = loadData(dataName=dataName)
-    embeddings = model.encode(data["text"])
+    embeddings = model.encode(data["text"].to_list())
     embedded = pd.DataFrame({"X": embeddings.tolist(), "Y": data["storypoint"], "A": data[sensitive], "split_mark": data["split_mark"]})
     return embedded
 
@@ -69,7 +69,7 @@ def train_and_test(dataname, treatment = "None"):
 
     reduce_lr = tf.keras.callbacks.ReduceLROnPlateau(monitor='loss', patience=100, factor=0.3, min_lr=1e-6, verbose=1)
     checkpoint = tf.keras.callbacks.ModelCheckpoint(filepath=checkpoint_path, monitor="loss", save_best_only=True,
-                                                    save_weights_only=True, verbose=1)
+                                                    save_weights_only=False, verbose=1)
 
     history = model.fit(
         train_x, train_y,
@@ -86,32 +86,27 @@ def train_and_test(dataname, treatment = "None"):
     preds_test = model.predict(test_x).flatten()
     m_test = Metrics(test_y, preds_test)
     s = np.array(data[data["split_mark"] == "test"]["A"])
-    r = 1000
-    alpha = 0.05
     N = len(test_y)
-    violate_comp = 0
-    for i in range(r):
-        selected1 = np.random.choice(N, size=N, replace=True)
-        selected2 = np.random.choice(N, size=N, replace=True)
-        comp_y = test_y[selected1] - test_y[selected2]
-        comp_pred = preds_test[selected1] - preds_test[selected2]
-        m_comp = Metrics(comp_y, comp_pred)
-        ps = m_comp.comparative_separation(s[selected1], s[selected2], stats=False)
-        if min((ps)) < alpha:
-            violate_comp += 1
+    alpha = 0.05
+    selected1 = np.random.choice(N, size=N, replace=True)
+    selected2 = np.random.choice(N, size=N, replace=True)
+    comp_y = test_y[selected1] - test_y[selected2]
+    comp_pred = preds_test[selected1] - preds_test[selected2]
+    m_comp = Metrics(comp_y, comp_pred)
+    pc, dc, pw, dw = m_comp.comparative_separation(s[selected1], s[selected2], stats=False)
 
     result_test = {"Data": dataname, "Treatment": treatment, "MAE": m_test.mae(),
                    "Pearson": m_test.pearsonr().statistic, "Spearman": m_test.spearmanr().statistic,
-                   "Isep": m_test.Isep(s), "Comparative Separation": violate_comp/r}
+                   "Csep": m_test.Csep(s), "pc": pc, "dc": dc, "pw": pw, "dw": dw}
     return result_test
 
 if __name__ == "__main__":
-    np.random.seed(1)
+    np.random.seed(0)
     data = "jirasoftware_filtered"
     treatments = ["None", "FairReweighing"]
     results_test = []
     for treatment in treatments:
-        for _ in range(10):
+        for _ in range(1):
             result_test = train_and_test(data, treatment=treatment)
             results_test.append(result_test)
             df = pd.DataFrame(results_test)

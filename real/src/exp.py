@@ -27,8 +27,8 @@ class Exp:
             selectedr = np.random.choice(len(self.y_test), size=N, replace=False)
             m = Metrics(self.y_test[selectedr], self.preds[selectedr])
             for protected in self.A:
-                ps = m.separation(np.array(self.X_test[protected][selectedr]), stats=False)
-                if min((ps)) < self.alpha:
+                pt, dt, pf, df = m.separation(np.array(self.X_test[protected][selectedr]), stats=False)
+                if min((pt,pf)) < self.alpha:
                     violate[protected] += 1
         for protected in self.A:
             violate[protected] = violate[protected] / r
@@ -43,41 +43,14 @@ class Exp:
             pred = self.preds[selected1] - self.preds[selected2]
             m = Metrics(y, pred)
             for protected in self.A:
-                ps = m.comparative_separation(np.array(self.X_test[protected][selected1]), np.array(self.X_test[protected][selected2]))
-                if min((ps)) < self.alpha:
+                pc, dc, pw, dw = m.comparative_separation(np.array(self.X_test[protected][selected1]), np.array(self.X_test[protected][selected2]))
+                if min((pc,pw)) < self.alpha:
                     violate[protected] += 1
         for protected in self.A:
             violate[protected] = violate[protected] / r
         return violate
 
-    # def one_exp(self):
-    #     self.X_train, self.X_test, self.y_train, self.y_test = self.train_test_split(test_size=0.5)
-    #     #########################################
-    #     self.data_preprocess(self.X_train)
-    #     #########################################
-    #
-    #     sample_weight = self.treat(self.X_train, self.y_train)
-    #     self.fit(self.X_train, self.y_train, sample_weight)
-    #     self.preds = self.predict(self.X_test)
-    #     m = Metrics(self.y_test, self.preds)
-    #     for protected in self.A:
-    #         print("Protected Attribute: %s" %protected)
-    #         print("Separation")
-    #         ps = m.separation(self.X_test[protected], stats=True)
-    #         print(ps)
-    #
-    #     violate = self.exp_separation(N=200, r=10000)
-    #     print("Separation violation rate (N=200): " )
-    #     print(violate)
-    #     violate = self.exp_separation(N=400, r=10000)
-    #     print("Separation violation rate (N=400): " )
-    #     print(violate)
-    #     violate = self.exp_comp_separation(N=200, r=10000)
-    #     print("Comparative separation violation rate (N=200): ")
-    #     print(violate)
-    #     violate = self.exp_comp_separation(N=400, r=10000)
-    #     print("Comparative separation violation rate (N=400): ")
-    #     print(violate)
+
 
     def random_exp(self, violate_sep, violate_comp):
         self.X_train, self.X_test, self.y_train, self.y_test = self.train_test_split(test_size=0.5)
@@ -95,11 +68,11 @@ class Exp:
         comp_pred = self.preds[selected1] - self.preds[selected2]
         m_comp = Metrics(comp_y, comp_pred)
         for protected in self.A:
-            ps = m_sep.separation(self.X_test[protected], stats=False)
-            if min((ps)) < self.alpha:
+            pt, dt, pf, df = m_sep.separation(self.X_test[protected], stats=False)
+            if min((pt,pf)) < self.alpha:
                 violate_sep[protected]+=1
-            ps = m_comp.comparative_separation(np.array(self.X_test[protected][selected1]), np.array(self.X_test[protected][selected2]), stats=False)
-            if min((ps)) < self.alpha:
+            pc, dc, pw, dw = m_comp.comparative_separation(np.array(self.X_test[protected][selected1]), np.array(self.X_test[protected][selected2]), stats=False)
+            if min((pc,pw)) < self.alpha:
                 violate_comp[protected]+=1
 
 
