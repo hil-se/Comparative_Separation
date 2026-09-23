@@ -5,6 +5,7 @@ import pandas as pd
 import sklearn.metrics
 from scipy.stats import t, norm, pearsonr, spearmanr
 from sklearn.linear_model import LogisticRegression, LinearRegression
+from sklearn.model_selection import KFold
 from sklearn.preprocessing import MinMaxScaler
 from collections import Counter
 from pdb import set_trace
@@ -194,6 +195,50 @@ class Metrics:
 
         MI = Info / (-Entropy)
         return MI
+
+    def Csep_xfit(self, s, groups=None, n_splits=10, seed=0, return_raw=False):
+        """Cross-fitted Gaussian Csep, matching the HS2 implementation.
+
+        Estimate mean log[f(A|Y,prediction) / f(A|Y)] on held-out rows.
+        Pass prompt IDs as groups to keep related responses in the same fold.
+        Without groups, each row is treated as an independent observation.
+        Gaussian means and residual scales are fitted on training folds only.
+        The default clips negative estimates to zero, as in HS2; return_raw=True
+        retains the signed estimate for diagnostics. Existing Csep is unchanged.
+
+        Example: Metrics(y, predictions).Csep_xfit(lengths, groups=prompt_ids)
+        """
+        s = np.asarray(s, dtype=float)
+        y = np.asarray(self.y, dtype=float)
+        pred = np.asarray(self.y_pred, dtype=float)
+        if s.ndim != 1 or y.shape != s.shape or pred.shape != s.shape:
+            raise ValueError("s, y and predictions must be aligned 1-D arrays")
+        if not np.isfinite(np.column_stack((s, y, pred))).all():
+            raise ValueError("inputs must be finite")
+        groups = np.arange(len(s)).astype(str) if groups is None else np.asarray(groups, dtype=str)
+        if groups.shape != s.shape:
+            raise ValueError("groups must have one ID per observation")
+        unique_groups = np.unique(groups)
+        k = min(n_splits, len(unique_groups))
+        if k < 2:
+            raise ValueError("cross-fitting requires at least two folds/groups")
+        if np.unique(s).size == 1:
+            return 0.0
+
+        joint = np.column_stack((y, pred))
+        margin = y.reshape(-1, 1)
+        ratios = []
+        for train_groups, test_groups in KFold(k, shuffle=True, random_state=seed).split(unique_groups):
+            train = np.isin(groups, unique_groups[train_groups])
+            test = np.isin(groups, unique_groups[test_groups])
+            log_densities = []
+            for x in (joint, margin):
+                model = LinearRegression().fit(x[train], s[train])
+                scale = max(float(np.std(s[train] - model.predict(x[train]))), 1e-12)
+                log_densities.append(norm.logpdf(s[test], model.predict(x[test]), scale))
+            ratios.extend(log_densities[0] - log_densities[1])
+        raw = float(np.mean(ratios))
+        return raw if return_raw else max(0.0, raw)
 
     def Csep(self, s):
 
