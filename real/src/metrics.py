@@ -200,17 +200,10 @@ class Metrics:
         s = np.asarray(s, dtype=float)
         y = np.asarray(self.y, dtype=float)
         pred = np.asarray(self.y_pred, dtype=float)
-        if s.ndim != 1 or y.shape != s.shape or pred.shape != s.shape:
-            raise ValueError("s, y and predictions must be aligned 1-D arrays")
-        if not np.isfinite(np.column_stack((s, y, pred))).all():
-            raise ValueError("inputs must be finite")
+        
         groups = np.arange(len(s)).astype(str) if groups is None else np.asarray(groups, dtype=str)
-        if groups.shape != s.shape:
-            raise ValueError("groups must have one ID per observation")
         unique_groups = np.unique(groups)
         k = min(n_splits, len(unique_groups))
-        if k < 2:
-            raise ValueError("cross-fitting requires at least two folds/groups")
         if np.unique(s).size == 1:
             return 0.0
 
