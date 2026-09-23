@@ -196,31 +196,35 @@ class Metrics:
         MI = Info / (-Entropy)
         return MI
 
-    def Csep_xfit(self, s, groups=None, n_splits=10, seed=0, return_raw=False):
-        s = np.asarray(s, dtype=float)
-        y = np.asarray(self.y, dtype=float)
-        pred = np.asarray(self.y_pred, dtype=float)
-        
-        groups = np.arange(len(s)).astype(str) if groups is None else np.asarray(groups, dtype=str)
-        unique_groups = np.unique(groups)
-        k = min(n_splits, len(unique_groups))
-        if np.unique(s).size == 1:
-            return 0.0
+    def Csep_xfit(self, s, k=10):
 
-        joint = np.column_stack((y, pred))
-        margin = y.reshape(-1, 1)
+        groups = np.arange(len(s))
+
+        joint = pd.DataFrame({'y': self.y, 'y_pred': self.y_pred}, columns=['y', 'y_pred'])
+        margin = self.y.reshape(-1, 1)
+
         ratios = []
-        for train_groups, test_groups in KFold(k, shuffle=True, random_state=seed).split(unique_groups):
-            train = np.isin(groups, unique_groups[train_groups])
-            test = np.isin(groups, unique_groups[test_groups])
-            log_densities = []
-            for x in (joint, margin):
-                model = LinearRegression().fit(x[train], s[train])
-                scale = max(float(np.std(s[train] - model.predict(x[train]))), 1e-12)
-                log_densities.append(norm.logpdf(s[test], model.predict(x[test]), scale))
-            ratios.extend(log_densities[0] - log_densities[1])
+        for train, test in KFold(k, shuffle=True).split(groups):
+            model_joint = LinearRegression().fit(joint.iloc[train], s[train])
+            model_margin = LinearRegression().fit(margin[train], s[train])
+
+            pred_joint = model_joint.predict(joint)
+            pred_margin = model_margin.predict(margin)
+            rse_joint = np.std(pred_joint[train] - s[train])
+            rse_margin = np.std(pred_margin[train] - s[train])
+            pred_joint_test = model_joint.predict(joint.iloc[test])
+            pred_margin_test = model_margin.predict(margin[test])
+
+            pdf_joint = norm.pdf(s[test], pred_joint_test, rse_joint)
+            pdf_margin = norm.pdf(s[test], pred_margin_test, rse_margin)
+            Info = 0
+
+            for i in range(len(pdf_joint)):
+                Info = Info + math.log(pdf_joint[i] / pdf_margin[i])
+            MI = Info / len(pdf_joint)
+            ratios.append(MI)
         raw = float(np.mean(ratios))
-        return raw if return_raw else max(0.0, raw)
+        return raw
 
     def Csep(self, s):
 

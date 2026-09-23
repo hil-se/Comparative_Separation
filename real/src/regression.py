@@ -97,7 +97,7 @@ def train_and_test(dataname, treatment = "None"):
 
     result_test = {"Data": dataname, "Treatment": treatment, "MAE": m_test.mae(),
                    "Pearson": m_test.pearsonr().statistic, "Spearman": m_test.spearmanr().statistic,
-                   "Csep": m_test.Csep(s), "pc": pc, "dc": dc, "pw": pw, "dw": dw}
+                   "Isep": m_test.Isep(s), "pc": pc, "dc": dc, "pw": pw, "dw": dw}
     return result_test
 
 if __name__ == "__main__":
