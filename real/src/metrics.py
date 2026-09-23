@@ -197,17 +197,6 @@ class Metrics:
         return MI
 
     def Csep_xfit(self, s, groups=None, n_splits=10, seed=0, return_raw=False):
-        """Cross-fitted Gaussian Csep, matching the HS2 implementation.
-
-        Estimate mean log[f(A|Y,prediction) / f(A|Y)] on held-out rows.
-        Pass prompt IDs as groups to keep related responses in the same fold.
-        Without groups, each row is treated as an independent observation.
-        Gaussian means and residual scales are fitted on training folds only.
-        The default clips negative estimates to zero, as in HS2; return_raw=True
-        retains the signed estimate for diagnostics. Existing Csep is unchanged.
-
-        Example: Metrics(y, predictions).Csep_xfit(lengths, groups=prompt_ids)
-        """
         s = np.asarray(s, dtype=float)
         y = np.asarray(self.y, dtype=float)
         pred = np.asarray(self.y_pred, dtype=float)
