@@ -211,3 +211,15 @@ cython_debug/
 marimo/_static/
 marimo/_lsp/
 __marimo__/
+
+# Replication run outputs
+__pycache__/
+*.pyc
+.DS_Store
+.venv/
+classification/output/
+regression/output/
+regression/src/checkpoint/
+rlhf/output/
+rlhf/artifacts/
+rlhf/data/

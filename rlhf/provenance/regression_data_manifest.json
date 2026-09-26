@@ -1,0 +1,81 @@
+{
+  "artifacts": {
+    "test": {
+      "path": "/home/xx4455/FairRLHF/data/processed/phase2_helpsteer2_regression/test.jsonl",
+      "rows": 1824,
+      "sha256": "781e2619dd1557c434c803d33cc3eda9dd5ff63e6af3fba51141fcaf29d3061d"
+    },
+    "test_pairs": {
+      "path": "/home/xx4455/FairRLHF/data/processed/phase2_helpsteer2_regression/test_pairs.jsonl",
+      "rows": 912,
+      "sha256": "d924992a501cf028afbc81d5015b7c720f8375b25c941a57b0f20f76a641ba69"
+    },
+    "train": {
+      "path": "/home/xx4455/FairRLHF/data/processed/phase2_helpsteer2_regression/train.jsonl",
+      "rows": 14600,
+      "sha256": "554f63c6f75ba66624c3aa63155c2c1758d98eeaee40acf3ed8b061c2b38fac8"
+    },
+    "validation": {
+      "path": "/home/xx4455/FairRLHF/data/processed/phase2_helpsteer2_regression/validation.jsonl",
+      "rows": 1824,
+      "sha256": "3e896ef8d0406d1364b662170b336baa7cbe830de52e8f8c5d0392061405a4db"
+    }
+  },
+  "fair_reweighing": {
+    "bandwidth": 0.2,
+    "companion_reference": "https://github.com/hil-se/Comparative_Separation/blob/main/real/src/density_balance.py",
+    "density_model": "Neighbor",
+    "effective_sample_size": 14144.964617486135,
+    "fit_scope": "training_responses_only",
+    "implementation": "fair_rlhf.cp.DensityBalance",
+    "radius": 0.5,
+    "reference": "https://github.com/hil-se/Comparative_Separation/blob/main/cp.py",
+    "sensitive_attribute": "response_token_count",
+    "target": "helpfulness",
+    "treatment": "Reweighing",
+    "weight_maximum": 2.0421879580736184,
+    "weight_mean": 1.0,
+    "weight_minimum": 0.3284171866083574
+  },
+  "generated_at": "2026-08-06T12:11:19.728227+00:00",
+  "model": {
+    "name": "meta-llama/Llama-3.1-70B-Instruct",
+    "requested_revision": "1605565b47bb9346c5515c34102e054115b4f98b"
+  },
+  "schema_version": 1,
+  "sequence_policy": {
+    "max_length": 4096,
+    "overlength_response_policy": "omit",
+    "serialization": "user_assistant_chat"
+  },
+  "software": {
+    "git_commit": "7e204e48de922bad0a44961072a7d1973d9d9393",
+    "numpy": "2.4.6",
+    "python": "3.11.7"
+  },
+  "source": {
+    "pair_sha256": "23edaf51471eb71d957978dc1facfdcb63861a81fc6fb1da9ba61439320e7328",
+    "pairs": 9124,
+    "response_rating_scale": [
+      0,
+      4
+    ],
+    "responses": 18248
+  },
+  "split": {
+    "prompt_leakage_count": 0,
+    "test_prompts": 912,
+    "test_responses": 1824,
+    "train_prompts": 7299,
+    "train_responses": 14600,
+    "validation_prompts": 912,
+    "validation_responses": 1824
+  },
+  "status": "ready",
+  "study": {
+    "name": "helpsteer2_finetuned_regression_fairreweighing",
+    "source_pairs": "/home/xx4455/FairRLHF/data/processed/phase1_pairs/pairs.jsonl",
+    "split_unit": "prompt_id",
+    "task": "pointwise_helpfulness_regression"
+  }
+}

@@ -1,0 +1,158 @@
+{
+  "source_repository": "https://github.com/hil-se/FairRLHF",
+  "source_commit": "621b8b18f805fc849ef6af29b51cf68747bf9eec",
+  "models": [
+    {
+      "id": "regression",
+      "label": "Regression baseline",
+      "source_result": "helpsteer2_regression_llama31_gpu_fixed2_test",
+      "checkpoint": "phase2_helpsteer2_regression_llama31_gpu_fixed2_hf",
+      "checkpoint_inventory_sha256": "287665b97b3d69041624c223218818cabf94addf1e92bfb85e60b2a1b1e5a515",
+      "test_sha256": "781e2619dd1557c434c803d33cc3eda9dd5ff63e6af3fba51141fcaf29d3061d",
+      "test_pairs_sha256": "d924992a501cf028afbc81d5015b7c720f8375b25c941a57b0f20f76a641ba69",
+      "score_sha256": {
+        "pair_scores.jsonl": "6e85d29c3d4adcad71d6177e8f491cb4adae13f64447a58c69a83d19c6ec8dc4",
+        "response_scores.jsonl": "b2071fc5efad13451d001ee7b401b84d0c301ed462b9bed4d2bb9dae5086f216"
+      },
+      "expected": {
+        "preference_accuracy": 0.7741007194244605,
+        "csep_xfit": 0.015025761610423074,
+        "p_cluster": 0.0004997501249375312,
+        "d": 0.5092333462340174
+      }
+    },
+    {
+      "id": "regression_fr",
+      "label": "Regression FairReweighing",
+      "source_result": "helpsteer2_regression_llama31_fairreweighing_gpu_fixed3_test",
+      "checkpoint": "phase2_helpsteer2_regression_llama31_fairreweighing_gpu_fixed3_hf",
+      "checkpoint_inventory_sha256": "42c5904e3808228c76b9d39d44de57574b17bbf33069a7542cc9b410509e8f60",
+      "test_sha256": "781e2619dd1557c434c803d33cc3eda9dd5ff63e6af3fba51141fcaf29d3061d",
+      "test_pairs_sha256": "d924992a501cf028afbc81d5015b7c720f8375b25c941a57b0f20f76a641ba69",
+      "score_sha256": {
+        "pair_scores.jsonl": "4df55694e2ad6f572ad6693fa6a4fd12bdde78313d5506267abbea1b9eda81c0",
+        "response_scores.jsonl": "23a8d49dd1b51e62d1a6a023654db2eebdb3ccf992f7bc445e916ca29ae8ce8d"
+      },
+      "expected": {
+        "preference_accuracy": 0.7683453237410072,
+        "csep_xfit": 0.004138457207114143,
+        "p_cluster": 0.046476761619190406,
+        "d": 0.15205133776099095
+      }
+    },
+    {
+      "id": "natural",
+      "label": "Comparative All",
+      "source_result": "natural_top3_matched_20260910/hs2_step89",
+      "checkpoint": "step-89",
+      "checkpoint_inventory_sha256": "f6803f14f10967134674d9c551d1920c9a2511debd2a74480bbbe84ee8b75a72",
+      "test_sha256": "781e2619dd1557c434c803d33cc3eda9dd5ff63e6af3fba51141fcaf29d3061d",
+      "test_pairs_sha256": "d924992a501cf028afbc81d5015b7c720f8375b25c941a57b0f20f76a641ba69",
+      "score_sha256": {
+        "pair_scores.jsonl": "6ee1a50aa9637daffcfc3d190f602047630cfc11dd7f01f5f5cfbbe0fff9b8c5",
+        "response_scores.jsonl": "7c3cc240c1fd1533c5ec61709e8b13a5b6296871e6093f0874de151307b410a2"
+      },
+      "expected": {
+        "preference_accuracy": 0.8,
+        "csep_xfit": 0.040520780080858805,
+        "p_cluster": 0.0004997501249375312,
+        "d": 0.33438857770568853
+      }
+    },
+    {
+      "id": "long_000",
+      "label": "Comparative q=0",
+      "source_result": "helpsteer2_bt_composition/long_000",
+      "checkpoint": "helpsteer2_bt_llama31_long_000_hf",
+      "checkpoint_inventory_sha256": "55f864baa28302ea5b8716b4af0d2e892270b741fbaddf2e2ef5acf11d53ee5a",
+      "test_sha256": "781e2619dd1557c434c803d33cc3eda9dd5ff63e6af3fba51141fcaf29d3061d",
+      "test_pairs_sha256": "d924992a501cf028afbc81d5015b7c720f8375b25c941a57b0f20f76a641ba69",
+      "score_sha256": {
+        "pair_scores.jsonl": "100149545fd87738ad5eee7cebc6852fdc97003af059e1c5f040985daf90a254",
+        "response_scores.jsonl": "c4d32502dc448970f166759c2bfcd60c5cd908cdfd12a7471b004398f04979b7"
+      },
+      "expected": {
+        "preference_accuracy": 0.4330935251798561,
+        "csep_xfit": 0.775821342473185,
+        "p_cluster": 0.0004997501249375312,
+        "d": -3.9057505959974104
+      }
+    },
+    {
+      "id": "long_025",
+      "label": "Comparative q=0.25",
+      "source_result": "helpsteer2_bt_composition/long_025",
+      "checkpoint": "helpsteer2_bt_llama31_long_025_hf",
+      "checkpoint_inventory_sha256": "bf4e78fe217532e2b93a95acf3ce6dcd296d7e3f079ac27fd900062392198dc9",
+      "test_sha256": "781e2619dd1557c434c803d33cc3eda9dd5ff63e6af3fba51141fcaf29d3061d",
+      "test_pairs_sha256": "d924992a501cf028afbc81d5015b7c720f8375b25c941a57b0f20f76a641ba69",
+      "score_sha256": {
+        "pair_scores.jsonl": "3422b45984cd1821d13a36ec0df4514481faa5fc930a53b56191e20e53b51b2b",
+        "response_scores.jsonl": "779859c0dd60d5813eb1b51129625f652dd390adf6cb90f698b60744015f6629"
+      },
+      "expected": {
+        "preference_accuracy": 0.7223021582733813,
+        "csep_xfit": 0.018552788269343264,
+        "p_cluster": 0.0014992503748125937,
+        "d": -0.28838387440775115
+      }
+    },
+    {
+      "id": "long_050",
+      "label": "Comparative q=0.5",
+      "source_result": "helpsteer2_bt_composition/long_050",
+      "checkpoint": "helpsteer2_bt_llama31_long_050_hf",
+      "checkpoint_inventory_sha256": "321e015fd2df96b6c4a7bf40fd8ad2f1463dc07f3ebd6c316a962e9bd94c9496",
+      "test_sha256": "781e2619dd1557c434c803d33cc3eda9dd5ff63e6af3fba51141fcaf29d3061d",
+      "test_pairs_sha256": "d924992a501cf028afbc81d5015b7c720f8375b25c941a57b0f20f76a641ba69",
+      "score_sha256": {
+        "pair_scores.jsonl": "ffb1f8613c584607265e4e392ecbf1596d31328ad6e2857aba22f75481127fdf",
+        "response_scores.jsonl": "8d6b1a67126278d62b21a80bcf7a485a0ef031de4fe31f35ea433647ec45c4ba"
+      },
+      "expected": {
+        "preference_accuracy": 0.7424460431654676,
+        "csep_xfit": 0.0009807796116575662,
+        "p_cluster": 0.06146926536731634,
+        "d": 0.1440867904135326
+      }
+    },
+    {
+      "id": "long_075",
+      "label": "Comparative q=0.75",
+      "source_result": "helpsteer2_bt_composition/long_075_corrected_exact_test",
+      "checkpoint": "helpsteer2_bt_llama31_long_075_rewardbench_shared_rerun_hf",
+      "checkpoint_inventory_sha256": "c9670decbf162892fe57a7d1841c72546ffd634991a497a2b2c7011dfaeeb488",
+      "test_sha256": "781e2619dd1557c434c803d33cc3eda9dd5ff63e6af3fba51141fcaf29d3061d",
+      "test_pairs_sha256": "d924992a501cf028afbc81d5015b7c720f8375b25c941a57b0f20f76a641ba69",
+      "score_sha256": {
+        "pair_scores.jsonl": "9f408a282002ab105f0171c75071636d95e19c035281ffd085651efbc0bbc66d",
+        "response_scores.jsonl": "cc13c42c3092adf13ee2ae0c697bb245eabc812685363f867989669d467783e3"
+      },
+      "expected": {
+        "preference_accuracy": 0.758273381294964,
+        "csep_xfit": 0.062481089285399805,
+        "p_cluster": 0.0004997501249375312,
+        "d": 0.7484991735880978
+      }
+    },
+    {
+      "id": "long_100",
+      "label": "Comparative q=1",
+      "source_result": "helpsteer2_bt_composition/long_100",
+      "checkpoint": "helpsteer2_bt_llama31_long_100_hf",
+      "checkpoint_inventory_sha256": "28e5bf0d51392ab838b8b0dc8779214b468cf5de855ec835ec0e16842c5cc6fd",
+      "test_sha256": "781e2619dd1557c434c803d33cc3eda9dd5ff63e6af3fba51141fcaf29d3061d",
+      "test_pairs_sha256": "d924992a501cf028afbc81d5015b7c720f8375b25c941a57b0f20f76a641ba69",
+      "score_sha256": {
+        "pair_scores.jsonl": "3046aad262500bbed3ba56e245c5382cc830423be2adc316663a3e91036154d7",
+        "response_scores.jsonl": "5025b58a39bb4466cd88ee6530aa2b659315e608095dd641eb4c957f67349b6f"
+      },
+      "expected": {
+        "preference_accuracy": 0.6388489208633094,
+        "csep_xfit": 0.6631434807971798,
+        "p_cluster": 0.0004997501249375312,
+        "d": 3.381475464051525
+      }
+    }
+  ]
+}

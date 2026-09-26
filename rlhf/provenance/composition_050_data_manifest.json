@@ -1,0 +1,102 @@
+{
+  "artifacts": {
+    "train": {
+      "path": "/home/xx4455/FairRLHF/data/processed/phase2_helpsteer2_bt_llama31/long_050/train.jsonl",
+      "rows": 2324,
+      "sha256": "af66ce34256bb9fab953c1e62033ce80d34e26b761d299887acf8e79e7f44617"
+    },
+    "validation": {
+      "path": "/home/xx4455/FairRLHF/data/processed/phase2_helpsteer2_bt_llama31/long_050/validation.jsonl",
+      "rows": 717,
+      "sha256": "f27e3d9302b8bf524d54e533fbaae6d3931e63cf417a3238b60c66a0cf1e94a0"
+    }
+  },
+  "generated_at": "2026-08-10T00:51:28.510124+00:00",
+  "heldout_evaluation": {
+    "data_root": "/home/xx4455/FairRLHF/data/processed/phase2_helpsteer2_regression",
+    "test_pairs_sha256": "d924992a501cf028afbc81d5015b7c720f8375b25c941a57b0f20f76a641ba69",
+    "test_sha256": "781e2619dd1557c434c803d33cc3eda9dd5ff63e6af3fba51141fcaf29d3061d"
+  },
+  "length_audit": {
+    "train": {
+      "pairs_after_length_filter": 2324
+    },
+    "validation": {
+      "pairs_after_length_filter": 717
+    }
+  },
+  "normalization_audit": {
+    "chosen_source_position_counts": {
+      "1": 1106,
+      "2": 1218
+    },
+    "excluded_tie_rows": null,
+    "preference_strength_counts": {
+      "1": 956,
+      "2": 836,
+      "3": 532
+    },
+    "train_winner_length_counts": {
+      "long": 1162,
+      "short": 1162
+    },
+    "validation_winner_length_counts": {
+      "equal": 6,
+      "long": 448,
+      "short": 263
+    }
+  },
+  "sampling": {
+    "condition": "long_050",
+    "equal_length_policy": "exclude_as_undefined",
+    "fixed_controlled_train_pairs": 2324,
+    "natural_uses_all_non_tie_pairs": false,
+    "realized_long_winner_ratio": 0.5,
+    "requested_long_winner_ratio": 0.5,
+    "seed": 1234,
+    "without_replacement": true
+  },
+  "schema_version": 1,
+  "sequence_policy": {
+    "max_length": 4096,
+    "overlength_pair_policy": "omit_if_either_response_was_omitted",
+    "serialization": "user_assistant_chat"
+  },
+  "software": {
+    "git_commit": "7e204e48de922bad0a44961072a7d1973d9d9393",
+    "python": "3.11.7"
+  },
+  "source": {
+    "dataset": "nvidia/HelpSteer2",
+    "domains": [
+      "helpsteer2"
+    ],
+    "pair_sha256": "23edaf51471eb71d957978dc1facfdcb63861a81fc6fb1da9ba61439320e7328",
+    "pairs": "/home/xx4455/FairRLHF/data/processed/phase1_pairs/pairs.jsonl",
+    "regression_contract": "/home/xx4455/FairRLHF/data/processed/phase2_helpsteer2_regression",
+    "regression_manifest_sha256": "e9b7c987e866f4689664deaa6fb8fd40d396be874f1a5420ae2b43e573289fec"
+  },
+  "split_policy": {
+    "name": "reuse_phase1_prompt_split",
+    "paper_alignment_note": "The existing prompt-disjoint HelpSteer2 split is reused; only training-pair composition changes across conditions.",
+    "post_length_prompt_leakage_count": 0,
+    "seed": 1234,
+    "unit": "prompt_id"
+  },
+  "status": "ready",
+  "study": {
+    "condition": "long_050",
+    "long_winner_ratio": 0.5,
+    "name": "helpsteer2_bt_comparative_separation",
+    "objective": "binary_bradley_terry"
+  },
+  "tokenizer": {
+    "chat_template_sha256": "e10ca381b1ccc5cf9db52e371f3b6651576caee0a630b452e2816b2d404d4b65",
+    "class": "PreTrainedTokenizerFast",
+    "name": "meta-llama/Llama-3.1-70B-Instruct",
+    "requested_revision": "1605565b47bb9346c5515c34102e054115b4f98b",
+    "resolved_revision": "1605565b47bb9346c5515c34102e054115b4f98b",
+    "serialization_profile": "tokenizer_native",
+    "serialization_source": "tokenizer_config.json"
+  }
+}

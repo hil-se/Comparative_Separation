@@ -1,3 +1,13 @@
-scikit-learn
-pandas
-tensorflow
+numpy>=1.26
+scipy>=1.13
+scikit-learn>=1.5
+pandas>=2.2
+tensorflow>=2.16
+sentence-transformers>=3.0
+# HelpSteer2 data preparation, model fitting and scoring (not table reproduction)
+torch>=2.4
+transformers>=4.45,<5
+accelerate>=1.0
+datasets>=3.0
+jinja2>=3.1
+safetensors>=0.4

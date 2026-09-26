@@ -1,0 +1,72 @@
+schema_version = 1
+
+[study]
+name = "helpsteer2_bt_llama31_long_100"
+phase = 2
+dataset = "nvidia/HelpSteer2"
+objective = "binary_bradley_terry"
+condition = "long_100"
+long_winner_ratio = 1.0
+comparison_mode = "controlled_ablation"
+
+[model]
+name = "meta-llama/Llama-3.1-70B-Instruct"
+revision = "1605565b47bb9346c5515c34102e054115b4f98b"
+torch_dtype = "bfloat16"
+attention_implementation = "sdpa"
+head = "single_scalar_on_last_non_padding_token"
+full_model_finetuning = true
+
+[data]
+root = "data/processed/phase2_helpsteer2_bt_llama31/long_100"
+manifest = "manifest.json"
+train_file = "train.jsonl"
+validation_file = "validation.jsonl"
+tokenizer_name = "meta-llama/Llama-3.1-70B-Instruct"
+tokenizer_revision = "1605565b47bb9346c5515c34102e054115b4f98b"
+domains = ["helpsteer2"]
+max_length = 4096
+pad_to_multiple_of = 8
+selection = "source"
+allow_engineering_contract = false
+
+[training]
+loss = "binary_bradley_terry"
+epochs = 1.0
+max_steps = 200
+micro_batch_size = 1
+eval_micro_batch_size = 1
+global_batch_size = 64
+learning_rate = 0.000002
+lr_scheduler = "constant_with_warmup"
+warmup_steps = 10
+optimizer = "adamw_torch_fused"
+weight_decay = 0.1
+adam_beta1 = 0.9
+adam_beta2 = 0.98
+adam_epsilon = 0.00000001
+max_grad_norm = 1.0
+tf32 = true
+seed = 1234
+eval_steps = 201
+save_steps = 200
+target_checkpoint_step = 200
+save_total_limit = 1
+save_only_model = true
+logging_steps = 1
+dataloader_num_workers = 0
+
+[distributed]
+expected_world_size = 16
+strategy = "fsdp_full_shard"
+transformer_layer_class = "LlamaDecoderLayer"
+activation_checkpointing = true
+backward_prefetch = "backward_post"
+forward_prefetch = false
+use_orig_params = false
+sync_each_batch = true
+state_dict_type = "sharded_state_dict"
+
+[output]
+directory = "artifacts/checkpoints/helpsteer2_bt_llama31_long_100"
+overwrite = false

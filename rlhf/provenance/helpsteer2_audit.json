@@ -1,0 +1,107 @@
+{
+  "alignment": {
+    "aligned_pairs": 9124,
+    "conflicting_pointwise_rows": 0,
+    "duplicate_pointwise_rows": 1,
+    "duplicate_preference_pairs": 0,
+    "fatal_issue_count": 0,
+    "identical_preference_response_rows": 1,
+    "invalid_pointwise_rows": 0,
+    "invalid_preference_rows": 0,
+    "is_valid": true,
+    "missing_left_ratings": 0,
+    "missing_right_ratings": 0,
+    "pointwise_rows": 21362,
+    "preference_rows": 9125,
+    "source_split_mismatches": 0,
+    "tie_pairs": 2007,
+    "unique_pointwise_responses": 21361
+  },
+  "dataset": {
+    "name": "nvidia/HelpSteer2",
+    "preference_data_dir": "preference",
+    "revision": "990b2711a36180dd19d9c94b8627844866f8982a"
+  },
+  "experimental_split": {
+    "seed": 1,
+    "test_fraction": 0.1,
+    "train_fraction": 0.8,
+    "unit": "prompt_id",
+    "validation_fraction": 0.1
+  },
+  "generated_at": "2026-07-23T15:44:53.061402+00:00",
+  "pairs": {
+    "duplicate_pair_count": 0,
+    "helpfulness_preference_counts": {
+      "agrees": 5872,
+      "disagrees": 127,
+      "pointwise_tie": 1118
+    },
+    "identical_response_pairs": 0,
+    "is_valid": true,
+    "label_counts": {
+      "left_preferred": 3330,
+      "right_preferred": 3787,
+      "tie": 2007
+    },
+    "left_preference_rate": 0.46789377546719124,
+    "missing_token_count_pairs": 0,
+    "position_preference_gap": -0.06421244906561753,
+    "preferred_length_counts": {
+      "equal_length": 31,
+      "preferred_longer": 4220,
+      "preferred_shorter": 2866
+    },
+    "prompt_leakage_count": 0,
+    "response_token_count_summary": {
+      "maximum": 1587,
+      "mean": 301.1379348304712,
+      "median": 273.0,
+      "minimum": 1,
+      "p95": 697,
+      "p99": 1023,
+      "responses": 18168
+    },
+    "source_split_pair_counts": {
+      "train": 8676,
+      "validation": 448
+    },
+    "split_pair_counts": {
+      "test": 912,
+      "train": 7300,
+      "unassigned": 0,
+      "validation": 912
+    },
+    "split_prompt_counts": {
+      "test": 912,
+      "train": 7299,
+      "unassigned": 0,
+      "validation": 912
+    },
+    "token_counted_pairs": 9124,
+    "total_pairs": 9124,
+    "unassigned_pairs": 0,
+    "unique_prompts": 9123,
+    "unique_responses": 18168
+  },
+  "pairs_artifact": {
+    "path": "data/processed/phase1_pairs/pairs.jsonl",
+    "rows": 9124,
+    "sha256": "23edaf51471eb71d957978dc1facfdcb63861a81fc6fb1da9ba61439320e7328"
+  },
+  "schema_version": 1,
+  "software": {
+    "datasets": "2.8.0",
+    "python": "3.11.7",
+    "tokenizers": "0.21.0",
+    "transformers": "4.49.0"
+  },
+  "tokenizer": {
+    "class": "PreTrainedTokenizerFast",
+    "model_max_length": 131072,
+    "name": "meta-llama/Llama-3.1-70B-Instruct",
+    "response_special_tokens": false,
+    "revision": "1605565b47bb9346c5515c34102e054115b4f98b",
+    "vocabulary_size": 128000
+  }
+}

@@ -1,0 +1,7 @@
+Treatment,compas-sex,compas-race,german-age,german-sex
+None-Separation,1,1,0.844,0.523
+None-Comparative Separation,1,1,0.676,0.613
+FairBalance-Separation,0.245,0.37,0.241,0.18
+FairBalance-Comparative Separation,0.312,0.411,0.323,0.313
+Reweighing-Separation,0.286,0.642,0.223,0.135
+Reweighing-Comparative Separation,0.38,0.455,0.325,0.35
