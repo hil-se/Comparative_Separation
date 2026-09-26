@@ -19,7 +19,7 @@ and regression tables are included. The HelpSteer2 table is recalculated from
 the eight submitted models' response and pair scores, with checkpoint provenance.
 Refitting stochastic models is distinct from recalculating a saved result.
 
-`real/`, `simulation/`, and root `cp.py` are retained for compatibility with
+`real/` and root `cp.py` are retained for compatibility with
 earlier links. The four directories above are the replication entry points.
 The Jira experiment uses the historical in-sample separation estimator; the
 HelpSteer2 experiment uses prompt-grouped cross-fitting. These are not interchangeable.
